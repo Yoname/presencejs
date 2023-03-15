@@ -32,8 +32,8 @@ These React Serverless Components are built with `presencejs`:
 
 <img width="800" alt="image" src="https://user-images.githubusercontent.com/65603/225336005-56f3605e-a150-4c9a-891c-fc5f51f46c5c.png">
 
-- Preview: https://allegrocloud.io/preview/clewfjysp0008osvwuina6qnf
-- Source code: [components/react/grouphug-react](./components/react/group-hug)
+- [Preview](https://allegrocloud.io/preview/clewfjysp0008osvwuina6qnf)
+- Source code: [./components/react/grouphug-react](./components/react/group-hug)
 
 ## 🥷🏼 Quick Start
 
@@ -64,12 +64,11 @@ import Presence from '@yomo/presence';
 
 // create an instance.
 const p = new Presence('https://prsc.yomo.dev', {
-    auth: {
-        // Certification Type
-        type: 'token',
-        // Api for getting access token
-        endpoint: '/api/presence-auth',
-    },
+  url: process.env.NEXT_PUBLIC_PRESENCE_URL,
+  publicKey: process.env.NEXT_PUBLIC_PRESENCE_PUBLIC_KEY,
+  id,
+  appId: process.env.NEXT_PUBLIC_APP_ID,
+  debug: true,
 });
 
 p.on('connected', () => {
@@ -91,7 +90,6 @@ c.subscribePeers((peers) => {
 });
 ```
 
-
 #### Broadcast messages to all peers in this channel
 
 ```js
@@ -106,7 +104,7 @@ document.addEventListener('visibilitychange', cb)
 
 ```js
 const unsubscribe = channel.subscribe(
-    'hidden-state-change', 
+    'hidden-state-change',
     ({ payload, peerState }) => {
         console.log(`${peerState.id} change visibility to: ${payload}`)
     })
