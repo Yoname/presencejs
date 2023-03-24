@@ -1,50 +1,50 @@
 {
-    "name": "@yomo/presence",
-    "version": "2.1.0-alpha1",
-    "description": "Edge Infra for Realtime Web Applications, geo-distributed architecture ⚡️",
-    "license": "MIT",
-    "keywords": [
-        "webtransport",
-        "websocket",
-        "presence",
-        "live",
-        "realtime"
-    ],
-    "module": "./dist/index.js",
-    "typings": "./dist/index.d.ts",
-    "types": "./dist/index.d.ts",
-    "files": [
-        "dist"
-    ],
-    "exports": {
-        ".": {
-            "import": "./dist/index.js",
-            "require": "./dist/index.mjs",
-            "types": "./dist/index.d.ts"
-        },
-        "./package.json": "./package.json"
+  "name": "@yomo/presence",
+  "version": "2.1.1",
+  "description": "Edge Infra for Realtime Web Applications, geo-distributed architecture ⚡️",
+  "license": "MIT",
+  "keywords": [
+    "webtransport",
+    "websocket",
+    "presence",
+    "live",
+    "realtime"
+  ],
+  "module": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     },
-    "repository": "github.com:yomorun/presencejs",
-    "bugs": {
-        "url": "https://github.com/yomorun/presencejs/issues"
-    },
-    "homepage": "https://presence.js.org",
-    "devDependencies": {
-        "@msgpack/msgpack": "^2.8.0",
-        "@types/node-fetch": "^2.5.12",
-        "node-fetch": "^2.6.7",
-        "tsdx": "^0.14.1",
-        "tsup": "^6.2.2",
-        "typescript": "^4.5.2",
-        "web-streams-polyfill": "^3.2.1"
-    },
-    "dependencies": {
-        "@yomo/webtransport-polyfill": "^1.0.1"
-    },
-    "scripts": {
-        "start": "tsup ./src/index.ts --dts --watch",
-        "build": "tsup ./src/index.ts --dts",
-        "test": "tsdx test --detectOpenHandles",
-        "lint": "tsdx lint"
-    }
+    "./package.json": "./package.json"
+  },
+  "repository": "github.com:yomorun/presencejs",
+  "bugs": {
+    "url": "https://github.com/yomorun/presencejs/issues"
+  },
+  "homepage": "https://presence.js.org",
+  "devDependencies": {
+    "@msgpack/msgpack": "^2.8.0",
+    "@types/node-fetch": "^2.5.12",
+    "node-fetch": "^2.6.7",
+    "tsdx": "^0.14.1",
+    "tsup": "^6.2.2",
+    "typescript": "^4.5.2",
+    "web-streams-polyfill": "^3.2.1"
+  },
+  "dependencies": {
+    "@yomo/webtransport-polyfill": "^1.0.1"
+  },
+  "scripts": {
+    "start": "tsup ./src/index.ts --dts --watch",
+    "build": "tsup ./src/index.ts --dts",
+    "test": "tsdx test --detectOpenHandles",
+    "lint": "tsdx lint"
+  }
 }
