@@ -46,17 +46,17 @@ export default function GroupHug(
     props.presence.then((yomo) => {
       const _channel = yomo.joinChannel('group-hug', myState);
 
-      _channel.subscribePeers((peers) => {
+      _channel.subscribePeers(peers => {
         const users: User[] = [myState];
         // MPOP: this is a hack to avoid duplicate users
-        (peers as User[]).forEach((peer) => {
-          if (!users.find((user) => user.id === peer.id)) {
+        (peers as User[]).forEach(peer => {
+          if (!users.find(user => user.id === peer.id)) {
             users.push(peer);
           }
         });
         setUsers([
           myState,
-          ...(peers as User[]).filter((peer) => 'avatar' in peer),
+          ...(peers as User[]).filter(peer => 'avatar' in peer),
         ]);
       });
       setUsers([myState]);
@@ -89,14 +89,14 @@ export default function GroupHug(
       'change-state',
       ({ payload: { state }, state: { id } }: any) => {
         // find user
-        const user = users.find((user) => user.id === id);
+        const user = users.find(user => user.id === id);
         if (user) {
           const newState: User = {
             ...user,
             state,
           };
           setUsers(
-            users.map((user) => {
+            users.map(user => {
               if (user.id === id) {
                 return newState;
               }
@@ -260,7 +260,7 @@ function Others({ size, users }) {
           ></div>
 
           <div className="bg-white dark:bg-[#34323E] p-[10px] shadow-[0px_1px_4px_0px_rgb(0_0_0_/_0.1)] rounded-[6px] -translate-y-[5px]">
-            {users.slice(5, users.length).map((user) => (
+            {users.slice(5, users.length).map(user => (
               <div
                 key={user.id}
                 className="flex items-center gap-2 p-[10px]

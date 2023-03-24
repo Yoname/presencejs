@@ -1,6 +1,5 @@
 import babel from '@rollup/plugin-babel';
 import typescript from '@rollup/plugin-typescript';
-import dts from 'rollup-plugin-dts';
 import jsx from 'acorn-jsx';
 import replace from '@rollup/plugin-replace';
 
