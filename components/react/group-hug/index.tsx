@@ -43,7 +43,6 @@ export default function GroupHug(
   const [connected, setConnected] = useState(false);
   const [channel, setChannel] = useState<IChannel | null>(null);
   useEffect(() => {
-    let channel: IChannel | null = null;
     props.presence.then((yomo) => {
       const _channel = yomo.joinChannel('group-hug', myState);
 
