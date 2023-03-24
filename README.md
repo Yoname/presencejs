@@ -134,11 +134,7 @@ see [prscd](./prscd)
 
 ## 🏡 Self-managed hosting
 
-### Tutorial: Single node on Digital Ocean
-
-### Tutorial: Geo-distributed system on AWS
-
-### Tutorial: Geo-distributed system on Azure
+Docs: https://presence.js.org
 
 ## License
 
