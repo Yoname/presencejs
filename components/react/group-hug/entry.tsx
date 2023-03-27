@@ -11,13 +11,15 @@ const root = createRoot(domContainer);
 const id = Math.random().toString();
 const avatar = Math.random() > 0.5 ? `https://robohash.org/${id}` : void 0;
 const randomName = faker.name.fullName();
-const presence = createPresence({
-  url: (import.meta as any).env.NEXT_PUBLIC_PRESENCE_URL,
-  publicKey: (import.meta as any).env.VITE_PUBLIC_KEY,
-  id,
-  appId: (import.meta as any).env.VITE_APP_ID,
-  debug: true,
-});
+
+const presence = createPresence(
+  (import.meta as any).env.VITE_PUBLIC_PRESENCE_URL,
+  {
+    publicKey: (import.meta as any).env.VITE_PUBLIC_KEY,
+    id,
+    debug: true,
+  }
+);
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(true);

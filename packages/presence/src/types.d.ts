@@ -9,40 +9,46 @@ export type State = {
   [key: string]: any;
 };
 
+/**
+ * @param state - the state of the presence instance
+ * @param payload - the payload of the event
+ * @example { state: { id: 'my-id' }, payload: { foo: 'bar' } }
+ */
 export type PayloadPacket<T> = {
   state: State;
   payload?: T;
 };
 
-// external options, api caller should use this options
 export type PresenceOptions = {
-  url?: string;
   id?: string;
   publicKey?: string;
-  appId?: string;
-  appSecret?: string;
-  endpoint?: string;
   reliable?: boolean; // default: false
-  debug?: boolean;// default: false
+  debug?: boolean; // default: false
   autoDowngrade?: boolean; // default: false
 };
 
 // internal options, create presence instance with this options
 export type InternalPresenceOptions = {
-  url: string;
   id: string;
   reliable: boolean;
   publicKey?: string;
-  appId?: string;
-  appSecret?: string;
-  endpoint?: string;
-  debug?: boolean;
+  debug: boolean;
   autoDowngrade: boolean;
 };
 
-// presence instance
+/**
+ * @param onReady - callback function when the presence instance is ready
+ * @param onError - callback function when the presence instance is error
+ * @param onClosed - callback function when the presence instance is closed
+ */
 export interface IPresence {
   onReady(callbackFn: (presence: IPresence) => void): void;
+  /**
+   * join a channel
+   * @param channelId a unique channel id
+   * @param state join channel initial state
+   * @returns {Channel}
+   */
   joinChannel: (channelId: string, metadata?: State) => IChannel;
   leaveChannel: (channelId: string) => void;
 }

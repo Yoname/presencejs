@@ -12,17 +12,17 @@ import { Logger } from './logger';
 
 export class Presence implements IPresence {
   #url: string = '';
-  #metadata: State;
+  #state: State;
   #channels: Map<string, IChannel> = new Map();
   #transport: any;
   #options: InternalPresenceOptions;
   #logger: Logger;
-  #onReadyCallbackFn: Function = () => {};
-  #onErrorCallbackFn: Function = () => {};
-  #onClosedCallbackFn: Function = () => {};
+  #onReadyCallbackFn: Function = () => { };
+  #onErrorCallbackFn: Function = () => { };
+  #onClosedCallbackFn: Function = () => { };
 
-  constructor(options: InternalPresenceOptions) {
-    this.#metadata = {
+  constructor(url: string, options: InternalPresenceOptions) {
+    this.#state = {
       id: options.id,
     };
     this.#options = options;
@@ -31,34 +31,23 @@ export class Presence implements IPresence {
       module: 'presence',
     });
     (async () => {
-      this.#url = await this.#formatUrl();
+      this.#url = await this.#formatUrl(url);
       this.#connect();
     })();
   }
 
-  async #formatUrl() {
-    if ('appId' in this.#options && 'publicKey' in this.#options) {
-      return this.#formatUrlWithPublicKey();
-    } else if (
-      'appId' in this.#options &&
-      'appSecret' in this.#options &&
-      'endpoint' in this.#options
-    ) {
-      return await this.#formatUrlWithIdAndSecret();
+  async #formatUrl(url: string) {
+    if (typeof url !== 'string' || !url.startsWith('https://')) {
+      throw new Error('Invalid url');
+    }
+    if ('id' in this.#options && 'publicKey' in this.#options) {
+      return this.#formatUrlWithPublicKey(url);
     }
     throw new Error('Invalid options');
   }
 
-  async #formatUrlWithIdAndSecret() {
-    const response = await fetch(this.#options.endpoint as string);
-    const data = await response.json();
-    return `${this.#options.url}?token=${data.token}&id=${this.#metadata.id}`;
-  }
-
-  #formatUrlWithPublicKey() {
-    return `${this.#options.url}?publickey=${this.#options.publicKey}&id=${
-      this.#metadata.id
-    }&app_id=${this.#options.appId}`;
+  #formatUrlWithPublicKey(url: string) {
+    return `${url}?publickey=${this.#options.publicKey}&id=${this.#state.id}`;
   }
 
   onReady(callbackFn: Function) {
@@ -70,13 +59,12 @@ export class Presence implements IPresence {
   onClosed(callbackFn: Function) {
     this.#onClosedCallbackFn = callbackFn;
   }
-
-  joinChannel(channelId: string, metadata?: State) {
-    this.#metadata = {
-      ...this.#metadata,
-      ...(metadata || {}),
+  joinChannel(channelId: string, state?: State) {
+    this.#state = {
+      ...this.#state,
+      ...(state || {}),
     };
-    const channel = new Channel(channelId, this.#metadata, this.#transport, {
+    const channel = new Channel(channelId, this.#state, this.#transport, {
       reliable: this.#options.reliable,
       debug: this.#options.debug || false,
     });
@@ -111,7 +99,7 @@ export class Presence implements IPresence {
       })
       .catch((e: Error) => {
         this.#logger.log('error: ', e);
-        if(!this.#options.autoDowngrade) {
+        if (!this.#options.autoDowngrade) {
           return;
         }
         setTimeout(() => {
@@ -123,29 +111,34 @@ export class Presence implements IPresence {
   }
 }
 
-const defaultOptions = {
+const defaultOptions: InternalPresenceOptions = {
   id: randomId(),
-  url: 'https://prscd2.allegro.earth/v1',
   reliable: false,
+  debug: false,
+  autoDowngrade: false,
 };
 
-export function createPresence(options: PresenceOptions): Promise<IPresence>;
-export function createPresence(options: PresenceOptions) {
+/**
+ * create a presence instance
+ * @param url backend url
+ * @param {string} options.id - the id of the presence instance
+ * @param {string} options.publicKey - the public key of the presence instance
+ * @param {boolean} options.reliable - whether to use reliable transport
+ * @param {boolean} options.debug - whether to enable debug mode
+ * @param {boolean} options.autoDowngrade - whether to auto downgrade to unreliable transport, when the reliable transport is not available
+ * @returns {Promise<IPresence>}
+ */
+export function createPresence(
+  url: string,
+  options: PresenceOptions
+): Promise<IPresence>;
+export function createPresence(url: string, options: PresenceOptions) {
   return new Promise((resolve) => {
-    let id = options?.id || defaultOptions.id;
-    let url = options?.url || defaultOptions.url;
-    let reliable = options?.reliable || defaultOptions.reliable;
-    const debug = options?.debug || false;
-    const autoDowngrade = options?.autoDowngrade || false;
     const internalOptions: InternalPresenceOptions = {
+      ...defaultOptions,
       ...options,
-      id,
-      url,
-      reliable,
-      debug,
-      autoDowngrade,
     };
-    const presence = new Presence(internalOptions);
+    const presence = new Presence(url, internalOptions);
     presence.onReady(() => {
       resolve(presence);
     });
