@@ -60,14 +60,12 @@ $ pnpm i @yomo/presence
 #### Create a `Presence` instance
 
 ```js
-import Presence from '@yomo/presence';
+import createPresence from '@yomo/presence';
 
 // create an instance.
-const p = new Presence('https://prsc.yomo.dev', {
-  url: process.env.NEXT_PUBLIC_PRESENCE_URL,
+const p = createPresence('https://prsc.yomo.dev', {
   publicKey: process.env.NEXT_PUBLIC_PRESENCE_PUBLIC_KEY,
   id,
-  appId: process.env.NEXT_PUBLIC_APP_ID,
   debug: true,
 });
 
