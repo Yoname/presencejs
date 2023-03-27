@@ -6,7 +6,7 @@ import {
   IPeers,
   PeersSubscribeCallbackFn,
   Signaling,
-} from './type';
+} from './types';
 import { encode as msgPackEncode, decode } from '@msgpack/msgpack';
 import { Logger } from './logger';
 

@@ -24,6 +24,7 @@ export type PresenceOptions = {
   endpoint?: string;
   reliable?: boolean; // default: false
   debug?: boolean;// default: false
+  autoDowngrade?: boolean; // default: false
 };
 
 // internal options, create presence instance with this options
@@ -36,6 +37,7 @@ export type InternalPresenceOptions = {
   appSecret?: string;
   endpoint?: string;
   debug?: boolean;
+  autoDowngrade: boolean;
 };
 
 // presence instance

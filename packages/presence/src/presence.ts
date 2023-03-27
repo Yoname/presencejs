@@ -5,7 +5,7 @@ import {
   IPresence,
   State,
   PresenceOptions,
-} from './type';
+} from './types';
 import { randomId } from './utils';
 import WebTransport from '@yomo/webtransport-polyfill';
 import { Logger } from './logger';
@@ -110,7 +110,10 @@ export class Presence implements IPresence {
         });
       })
       .catch((e: Error) => {
-        this.#logger.log('error %o', e);
+        this.#logger.log('error: ', e);
+        if(!this.#options.autoDowngrade) {
+          return;
+        }
         setTimeout(() => {
           // force to use the polyfill
           window.WebTransport = WebTransport;
@@ -133,12 +136,14 @@ export function createPresence(options: PresenceOptions) {
     let url = options?.url || defaultOptions.url;
     let reliable = options?.reliable || defaultOptions.reliable;
     const debug = options?.debug || false;
+    const autoDowngrade = options?.autoDowngrade || false;
     const internalOptions: InternalPresenceOptions = {
       ...options,
       id,
       url,
       reliable,
       debug,
+      autoDowngrade,
     };
     const presence = new Presence(internalOptions);
     presence.onReady(() => {
