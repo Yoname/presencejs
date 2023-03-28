@@ -51,6 +51,6 @@
     "vite": "^4.1.4"
   },
   "dependencies": {
-    "@yomo/presence": "2.1.1"
+    "@yomo/presence": "workspace:*"
   }
 }

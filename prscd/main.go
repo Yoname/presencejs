@@ -32,7 +32,10 @@ func main() {
 		log.Debug("IN DEVELOPMENT ENV")
 	}
 
+	go startYomoZipper()
+
 	sndr := yomo.NewSource(os.Getenv("YOMO_SNDR_NAME"), yomo.WithZipperAddr(os.Getenv("YOMO_ZIPPER_ADDR")))
+
 	rcvr := yomo.NewStreamFunction(os.Getenv("YOMO_RCVR_NAME"), yomo.WithZipperAddr(os.Getenv("YOMO_ZIPPER_ADDR")))
 
 	chirp.Node.ConnectToYoMo(sndr, rcvr)
@@ -86,4 +89,16 @@ func main() {
 
 	c := make(chan os.Signal, 1)
 	register_os_signal(c)
+}
+
+func startYomoZipper() {
+	zipper, err := yomo.NewZipper("./dev-single-node.yaml")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = zipper.ListenAndServe()
+	if err != nil {
+		log.Fatal(err)
+	}
 }

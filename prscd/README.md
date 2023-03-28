@@ -18,7 +18,6 @@ The open source backend for Presencejs v2.0
 
 ## 🥷🏻 Development
 
-1. Start YoMo Zipper service in terminal-1：`yomo serve -c dev-single-node.yaml`
 1. Start prscd service in terminal-2：`make dev`
 1. Open `webtransport.html` by Chrome with Dev Tools
 1. Open `websocket.html` by Chrome with Dev Tools
@@ -37,9 +36,9 @@ make dist
 
 ### ☝🏻 Host on Single Cloud Region
 
-TODO: how to deploy `prscd` and `yomo` to digitalocean
+TODO: how to deploy `prscd` on digitalocean
 
-TODO: introducing geoping.gg, lighthouse for realtime applications.
+TODO: introducing [geoping.gg](https://geoping.gg), lighthouse for realtime applications.
 
 ### 🌍 Host as Geo-distributed System
 
@@ -62,7 +61,7 @@ Geo-IP
 ### about https://lo.yomo.dev
 
 ```bash
-$ openssl x509 -enddate -noout -in prscd/lo.yomo.dev.cert 
+$ openssl x509 -enddate -noout -in prscd/lo.yomo.dev.cert
 notAfter=May 22 07:40:45 2023 GMT
 ```
 
@@ -91,7 +90,7 @@ Currently, provide `public_key` for authentication, the endpoint looks like: `/v
 
 ### Live inspection
 
-Execute `make dev` in terminal-1: 
+Execute `make dev` in terminal-1:
 
 ```bash
 $ make dev

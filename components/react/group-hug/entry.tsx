@@ -12,14 +12,11 @@ const id = Math.random().toString();
 const avatar = Math.random() > 0.5 ? `https://robohash.org/${id}` : void 0;
 const randomName = faker.name.fullName();
 
-const presence = createPresence(
-  (import.meta as any).env.VITE_PUBLIC_PRESENCE_URL,
-  {
-    publicKey: (import.meta as any).env.VITE_PUBLIC_KEY,
-    id,
-    debug: true,
-  }
-);
+const presence = createPresence("https://lo.yomo.dev:8443/v1", {
+  publicKey: "PUBLIC_KEY",
+  id,
+  debug: true,
+});
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(true);
