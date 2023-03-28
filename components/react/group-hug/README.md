@@ -20,16 +20,10 @@ Create a [Presence](https://github.com/yomorun/presencejs) instance
 import Presence from '@yomo/presence';
 
 // create an instance.
-const p = new Presence('https://prsc.yomo.dev', {
-  url: process.env.NEXT_PUBLIC_PRESENCE_URL,
+const presencePromise = new Presence('https://prsc.yomo.dev', {
   publicKey: process.env.NEXT_PUBLIC_PRESENCE_PUBLIC_KEY,
   id,
-  appId: process.env.NEXT_PUBLIC_APP_ID,
   debug: true,
-});
-
-p.on('connected', () => {
-    console.log('Connected to server: ', p.host);
 });
 ```
 

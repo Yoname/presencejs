@@ -63,15 +63,20 @@ $ pnpm i @yomo/presence
 import createPresence from '@yomo/presence';
 
 // create an instance.
-const p = createPresence('https://prsc.yomo.dev', {
+const presencePromise = createPresence('https://prsc.yomo.dev', {
   publicKey: process.env.NEXT_PUBLIC_PRESENCE_PUBLIC_KEY,
   id,
   debug: true,
 });
 
-p.on('connected', () => {
-    console.log('Connected to server: ', p.host);
+presencePromise.then((presence) => {
+  console.log('Presence: ', presence);
 });
+
+// or
+// (async () => {
+//   const presence = await presencePromise;
+// })()
 ```
 
 #### Create `Channel`
@@ -79,9 +84,12 @@ p.on('connected', () => {
 add subscribe to peers online event:
 
 ```js
-const c = p.joinChannel('group-hug', myState);
+const channel = presence.joinChannel('group-hug', myState);
+// join multiple channels
+// const channel2 = presence.joinChannel('live-cursor', myState);
+// const channel3 = presence.joinChannel('cursor-chat', myState);
 
-c.subscribePeers((peers) => {
+channel.subscribePeers((peers) => {
     peers.forEach((peer) => {
       console.log(peer + " is online")
     }
@@ -106,6 +114,8 @@ const unsubscribe = channel.subscribe(
     ({ payload, peerState }) => {
         console.log(`${peerState.id} change visibility to: ${payload}`)
     })
+
+unsubscribe()
 ```
 
 ### 2. Start `prscd` backend service
@@ -120,10 +130,10 @@ see [prscd](./prscd)
 
 ### Channel
 
-- `subscribePeers`: observe peers online and offline events.
+- `subscribePeers`: observe peers online and offline events., return a `unsubscribePeers` function.
 - `broadcast`: broadcast events to all other peers.
-- `subscribe`: observe events indicated
-- `leave`: leave from a `Channel`
+- `subscribe`: observe events indicated, return a `unsubscribe` function.
+- `leave`: leave from a `Channel`.
 
 ## 👩🏼‍🔬 Development
 
