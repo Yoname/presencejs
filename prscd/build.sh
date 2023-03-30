@@ -10,27 +10,6 @@ set -e
 export LC_ALL=C
 export LC_DATE=C
 
-has_command() {
-    local cmd="$1"
-    type -P "$cmd" > /dev/null 2>&1
-}
-
-if ! has_command go; then
-    echo 'Error: go is not installed.' >&2
-    exit 1
-fi
-
-if ! has_command git; then
-    echo 'Error: git is not installed.' >&2
-    exit 1
-fi
-
-if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-    echo 'Error: not in a git repository.' >&2
-    exit 1
-fi
-
-
 make_ldflags() {
     local ldflags="-s -w -X 'main.appDate=$(date -u '+%F %T')'"
     if [ -n "$PRSCD_VERSION" ]; then
