@@ -23,6 +23,7 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: 1.19
+          cache-dependency-path: prscd/go.sum
 
       - name: Run build script
         env:
