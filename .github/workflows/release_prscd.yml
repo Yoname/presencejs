@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+    defaults:
+      run:
+        working-directory: prscd
 
     steps:
       - name: Check out
@@ -25,12 +28,11 @@ jobs:
         env:
           PRSCD_PLATFORMS: 'darwin/amd64,darwin/arm64,windows/amd64,windows/arm64,linux/amd64,linux/arm64,freebsd/amd64,freebsd/arm64'
         run: |
-          cd prscd
           sh ./build.sh
 
       - name: Generate hashes
         run: |
-          cd prscd/build
+          cd ./build
           for f in $(find . -type f); do
             sha256sum $f | sudo tee -a hashes.txt
           done
