@@ -140,6 +140,10 @@ export class Channel implements IChannel {
       }
       this.#writer = this.#transport.datagrams.writable.getWriter();
     }
+    // check connection state
+    if (await this.#transport.closed) {
+      throw new Error('Connection is disconnected');
+    }
     await this.#writer.ready;
     this.#writer.write(data);
     // writer.close();
