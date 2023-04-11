@@ -28,6 +28,14 @@ export default function Home() {
                 Piano
               </Link>
             </li>
+            <li className="mr-3">
+              <Link
+                href="/tic-tac-toe"
+                className="inline-block w-full px-4 py-2 text-gray-300 no-underline hover:text-gray-100 hover:text-underline"
+              >
+                Tic Tac Toe
+              </Link>
+            </li>
           </ul>
         )}
         <div className="block lg:hidden">
@@ -68,6 +76,14 @@ export default function Home() {
                 className="inline-block w-full px-4 py-2 text-gray-300 no-underline hover:text-gray-100 hover:text-underline"
               >
                 Piano
+              </Link>
+            </li>
+            <li className="mr-3">
+              <Link
+                href="/tic-tac-toe"
+                className="inline-block w-full px-4 py-2 text-gray-300 no-underline hover:text-gray-100 hover:text-underline"
+              >
+                Tic Tac Toe
               </Link>
             </li>
           </ul>

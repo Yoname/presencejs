@@ -15,17 +15,26 @@ export default function Chat() {
       const { presencePromise, id } = connect();
       setId(id);
       const presence = await presencePromise;
-      console.log('presence connected');
       const channel = presence.joinChannel('test');
-      channel.subscribe('msg', (peer: { msg: string; id: string }) => {
-        setMsgs((msgs) => [
-          ...msgs,
-          {
-            ...peer,
-            timestamp: new Date(),
-          },
-        ]);
-      });
+      channel.subscribe(
+        'msg',
+        ({
+          state: { id },
+          payload: { msg },
+        }: {
+          state: { id: string };
+          payload: { msg: string };
+        }) => {
+          setMsgs(msgs => [
+            ...msgs,
+            {
+              id,
+              msg,
+              timestamp: new Date(),
+            },
+          ]);
+        }
+      );
       setChannel(channel);
     })();
     return () => {
@@ -39,7 +48,7 @@ export default function Chat() {
       return;
     }
     // save self message
-    setMsgs((msgs) => [
+    setMsgs(msgs => [
       ...msgs,
       {
         msg,
@@ -102,12 +111,12 @@ export default function Chat() {
         <input
           type="text"
           value={msg}
-          onChange={(e) => {
+          onChange={e => {
             setMsg(e.target.value);
           }}
           className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-400"
           placeholder="Type your message here"
-          onKeyDown={(e) => {
+          onKeyDown={e => {
             if (e.key === 'Enter') {
               sendMsg();
             }
