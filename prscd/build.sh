@@ -31,12 +31,17 @@ build_for_platform() {
         return 1
     fi
     echo "Building $GOOS/$GOARCH"
-    local output="build/prscd-$GOOS-$GOARCH"
+    local output="build/prscd"
     if [[ "$GOOS" = "windows" ]]; then
         output="$output.exe"
     fi
+    # compress to .zip file
+    local binfile="build/prscd-$GOARCH-$GOOS.zip"
     local exit_val=0
-    go build -o "$output" -ldflags "$ldflags" -trimpath || exit_val=$?
+    GOOS=$GOOS GOARCH=$GOARCH go build -o "$output" -ldflags "$ldflags" -trimpath || exit_val=$?
+    # compress compiled binary to .zip
+    zip -r -j "$binfile" "$output"
+    rm -rf $output
     if [[ "$exit_val" -ne 0 ]]; then
         echo "Error: failed to build $GOOS/$GOARCH" >&2
         return $exit_val

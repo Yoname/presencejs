@@ -27,7 +27,7 @@ jobs:
 
       - name: Run build script
         env:
-          PRSCD_PLATFORMS: 'darwin/amd64,darwin/arm64,windows/amd64,windows/arm64,linux/amd64,linux/arm64,freebsd/amd64,freebsd/arm64'
+          PRSCD_PLATFORMS: 'darwin/amd64,darwin/arm64,windows/amd64,windows/arm64,linux/amd64,linux/arm64'
         run: |
           bash ./build.sh
 
@@ -43,12 +43,10 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            ./prscd/build/prscd-darwin-amd64
-            ./prscd/build/prscd-darwin-arm64
-            ./prscd/build/prscd-windows-amd64.exe
-            ./prscd/build/prscd-windows-arm64.exe
-            ./prscd/build/prscd-linux-amd64
-            ./prscd/build/prscd-linux-arm64
-            ./prscd/build/prscd-freebsd-amd64
-            ./prscd/build/prscd-freebsd-arm64
+            ./prscd/build/prscd-amd64-darwin.zip
+            ./prscd/build/prscd-amd64-linux.zip
+            ./prscd/build/prscd-amd64-windows.zip
+            ./prscd/build/prscd-arm64-darwin.zip
+            ./prscd/build/prscd-arm64-linux.zip
+            ./prscd/build/prscd-arm64-windows.zip
             ./prscd/build/hashes.txt
