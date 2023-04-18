@@ -5,6 +5,9 @@ import {
   IPresence,
   State,
   PresenceOptions,
+  ConnectionStatus,
+  ConnectionStatusCallback,
+  ConnectionStatusObject,
 } from './types';
 import { randomId } from './utils';
 import WebTransport from '@yomo/webtransport-polyfill';
@@ -17,9 +20,16 @@ export class Presence implements IPresence {
   #transport: any;
   #options: InternalPresenceOptions;
   #logger: Logger;
+  #eventListeners: Map<ConnectionStatus, ConnectionStatusCallback[]> = new Map();
   #onReadyCallbackFn: Function = () => { };
   #onErrorCallbackFn: Function = () => { };
   #onClosedCallbackFn: Function = () => { };
+  #currentStatus: ConnectionStatus = ConnectionStatus.CLOSED;
+  #retryCount = 0;
+
+  get status(): ConnectionStatus {
+    return this.#currentStatus;
+  }
 
   constructor(url: string, options: InternalPresenceOptions) {
     this.#state = {
@@ -32,6 +42,7 @@ export class Presence implements IPresence {
     });
     (async () => {
       this.#url = await this.#formatUrl(url);
+      this.#notifyConnectionStatusChange(ConnectionStatus.CONNECTING, 'Attempting to establish a connection.');
       this.#connect();
     })();
   }
@@ -53,12 +64,15 @@ export class Presence implements IPresence {
   onReady(callbackFn: Function) {
     this.#onReadyCallbackFn = callbackFn;
   }
+
   onError(callbackFn: Function) {
     this.#onErrorCallbackFn = callbackFn;
   }
+
   onClosed(callbackFn: Function) {
     this.#onClosedCallbackFn = callbackFn;
   }
+
   joinChannel(channelId: string, state?: State) {
     this.#state = {
       ...this.#state,
@@ -79,11 +93,36 @@ export class Presence implements IPresence {
     }
   }
 
+  on(status: ConnectionStatus, cb: ConnectionStatusCallback) {
+    if (!this.#eventListeners.has(status)) {
+      this.#eventListeners.set(status, []);
+    }
+    this.#eventListeners.get(status)!.push(cb);
+  }
+
+  #notifyConnectionStatusChange(status: ConnectionStatus, details: string) {
+    this.#currentStatus = status;
+
+    const code = ConnectionStatusCode[status];
+
+    const statusObject: ConnectionStatusObject = {
+      status,
+      code,
+      details,
+    };
+
+    const callbacks = this.#eventListeners.get(status);
+    if (callbacks) {
+      callbacks.forEach((callback) => callback(statusObject));
+    }
+  }
+
   #connect() {
     this.#transport = new window.WebTransport(this.#url);
 
     this.#transport.ready
       .then(() => {
+        this.#notifyConnectionStatusChange(ConnectionStatus.OPEN, 'Connection established successfully.');
         this.#onReadyCallbackFn();
       })
       .catch((e: Error) => {
@@ -94,6 +133,7 @@ export class Presence implements IPresence {
       .then(() => {
         this.#onClosedCallbackFn();
         this.#channels.forEach((channel) => {
+          this.#notifyConnectionStatusChange(ConnectionStatus.CLOSED, 'Connection has been disconnected.');
           channel.leave();
         });
       })
@@ -103,12 +143,24 @@ export class Presence implements IPresence {
           return;
         }
         setTimeout(() => {
+          if(this.#retryCount > 3) {
+            this.#logger.log('retry count exceeded');
+            this.#notifyConnectionStatusChange(ConnectionStatus.CLOSED, 'Connection has been disconnected.');
+            return;
+          }
           // force to use the polyfill
           window.WebTransport = WebTransport;
           this.#connect();
+          this.#retryCount++;
         }, 2_000);
       });
   }
+}
+
+const ConnectionStatusCode: Record<ConnectionStatus, number> = {
+  [ConnectionStatus.CONNECTING]: 0,
+  [ConnectionStatus.OPEN]: 1,
+  [ConnectionStatus.CLOSED]: 2
 }
 
 const defaultOptions: InternalPresenceOptions = {

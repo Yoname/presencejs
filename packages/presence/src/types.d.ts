@@ -36,6 +36,20 @@ export type InternalPresenceOptions = {
   autoDowngrade: boolean;
 };
 
+enum ConnectionStatus {
+  CONNECTING = 'connecting', // Connecting, indicates the initial connection attempt, code 0
+  OPEN = 'open', // Connected successfully, code 1
+  CLOSED = 'closed', // Disconnected, code 2
+}
+
+interface ConnectionStatusObject {
+  status: ConnectionStatus;
+  code: number;
+  details: string;
+}
+
+type ConnectionStatusCallback = (status: ConnectionStatusObject) => void;
+
 /**
  * @param onReady - callback function when the presence instance is ready
  * @param onError - callback function when the presence instance is error
@@ -51,6 +65,7 @@ export interface IPresence {
    */
   joinChannel: (channelId: string, metadata?: State) => IChannel;
   leaveChannel: (channelId: string) => void;
+  on: (status: ConnectionStatus, cb: ConnectionStatusCallback) => void;
 }
 
 type Peers = State[];
